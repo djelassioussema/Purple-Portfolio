@@ -43,7 +43,39 @@ class AdvancedRAGPipeline {
     const retrievalPromises = rewrittenQueries.map(async (q) => {
       const cacheKey = await this.generateCacheKey(q, context);
       const cached = await this.config.cache.get(cacheKey);
-      if (cached) return JSON.parse(cached);`
+      if (cached) return JSON.parse(cached);
+      
+      const results = await this.config.vectorStore.similaritySearch(q, 10);
+      await this.config.cache.set(cacheKey, JSON.stringify(results), 'EX', 3600);
+      return results;
+    });
+    
+    const allResults = await Promise.all(retrievalPromises);
+    const fusedResults = this.fusionRanking(allResults);
+    
+    // Generate response with context
+    const response = await this.generateResponse(query, fusedResults, context);
+    return response;
+  }
+
+  private fusionRanking(results: any[][]): any[] {
+    // Implement reciprocal rank fusion
+    const scoreMap = new Map();
+    
+    results.forEach((resultSet, setIndex) => {
+      resultSet.forEach((doc, rank) => {
+        const key = doc.metadata.id;
+        const score = 1 / (rank + 60);
+        scoreMap.set(key, (scoreMap.get(key) || 0) + score);
+      });
+    });
+    
+    return Array.from(scoreMap.entries())
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 5)
+      .map(([id]) => results.flat().find(doc => doc.metadata.id === id));
+  }
+}`
     },
     {
       icon: '🐍',
@@ -68,29 +100,29 @@ class AdvancedRAGPipeline {
   return (
     <section className="py-20 px-6 relative">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[600px]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left panel - Project cards */}
-          <div className="flex flex-col h-full">
-            <div className="grid grid-cols-1 gap-4 h-full">
+          <div className="flex flex-col">
+            <div className="grid grid-cols-1 gap-4">
               {projects.slice(1).map((project, index) => (
                 <div
                   key={index}
-                  className="group bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-xl p-4 hover:border-purple-500/50 transition-all duration-300 transform hover:scale-[1.02] flex-1 flex"
+                  className="group bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-xl p-4 hover:border-purple-500/50 transition-all duration-300 transform hover:scale-[1.02]"
                 >
-                  <div className="flex items-start space-x-3 w-full">
-                    <div className="text-xl flex-shrink-0 mt-1">{project.icon}</div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-semibold text-white mb-2 group-hover:text-purple-300 transition-colors leading-tight">
+                  <div className="flex items-start space-x-3">
+                    <div className="text-2xl flex-shrink-0">{project.icon}</div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-purple-300 transition-colors">
                         {project.title}
                       </h3>
-                      <p className="text-gray-400 text-xs mb-3 leading-relaxed line-clamp-2">
+                      <p className="text-gray-400 text-sm mb-3 leading-relaxed">
                         {project.description}
                       </p>
-                      <div className="flex flex-wrap gap-1">
-                        {project.tags.slice(0, 4).map((tag, tagIndex) => (
+                      <div className="flex flex-wrap gap-2">
+                        {project.tags.map((tag, tagIndex) => (
                           <span
                             key={tagIndex}
-                            className="px-2 py-0.5 bg-purple-500/20 text-purple-300 text-xs rounded-full border border-purple-500/30"
+                            className="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-full border border-purple-500/30"
                           >
                             {tag}
                           </span>
@@ -104,8 +136,8 @@ class AdvancedRAGPipeline {
           </div>
 
           {/* Right panel - Featured project with code editor */}
-          <div className="h-full">
-            <div className="group bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-xl overflow-hidden hover:border-purple-500/50 transition-all duration-300 h-full flex flex-col">
+          <div>
+            <div className="group bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-xl overflow-hidden hover:border-purple-500/50 transition-all duration-300 flex flex-col h-96">
               {/* Header */}
               <div className="p-4 border-b border-gray-800 flex-shrink-0">
                 <div className="flex items-start justify-between">
