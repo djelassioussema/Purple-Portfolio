@@ -1,7 +1,20 @@
 import React from 'react';
 import { Sun, Moon } from 'lucide-react';
 
-const Header = () => {
+interface HeaderProps {
+  currentPage: string;
+  setCurrentPage: (page: string) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage }) => {
+  const navItems = [
+    { id: 'home', label: 'Home' },
+    { id: 'about', label: 'About' },
+    { id: 'experience', label: 'Experience' },
+    { id: 'projects', label: 'Projects' },
+    { id: 'case-studies', label: 'Case Studies' }
+  ];
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-black/95 backdrop-blur-sm border-b border-gray-800/50">
       <nav className="flex items-center justify-between max-w-7xl mx-auto">
@@ -14,14 +27,22 @@ const Header = () => {
         {/* Navigation */}
         <div className="hidden md:flex items-center space-x-8">
           <div className="flex items-center space-x-6">
-            <a href="#" className="flex items-center space-x-2 bg-gray-800/50 backdrop-blur-sm px-4 py-2 rounded-full border border-gray-700/50">
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-              <span className="text-white">Home</span>
-            </a>
-            <a href="#" className="text-gray-300 hover:text-white transition-colors">About</a>
-            <a href="#" className="text-gray-300 hover:text-white transition-colors">Experience</a>
-            <a href="#" className="text-gray-300 hover:text-white transition-colors">Projects</a>
-            <a href="#" className="text-gray-300 hover:text-white transition-colors">Case Studies</a>
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setCurrentPage(item.id)}
+                className={`${
+                  currentPage === item.id
+                    ? 'flex items-center space-x-2 bg-gray-800/50 backdrop-blur-sm px-4 py-2 rounded-full border border-gray-700/50'
+                    : 'text-gray-300 hover:text-white transition-colors'
+                }`}
+              >
+                {currentPage === item.id && (
+                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                )}
+                <span className="text-white">{item.label}</span>
+              </button>
+            ))}
           </div>
         </div>
 
