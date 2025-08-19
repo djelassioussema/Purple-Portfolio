@@ -51,7 +51,7 @@ const AboutSection = () => {
         </div>
 
         {/* Profile Card */}
-        <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl p-8 mb-12">
+        <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl p-8">
           <div className="flex items-start space-x-6">
             {/* Avatar */}
             <div className="relative">
@@ -106,20 +106,22 @@ const AboutSection = () => {
               ))}
             </div>
           </div>
-        </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {stats.map((stat, index) => (
-            <div
-              key={index}
-              className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl p-6 text-center hover:border-purple-500/50 transition-all duration-300"
-            >
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <stat.icon className="w-6 h-6 text-white" />
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+            {stats.map((stat, index) => (
+              <div
+                key={index}
+                className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-4 text-center hover:border-purple-500/50 transition-all duration-300"
+              >
+                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <stat.icon className="w-4 h-4 text-white" />
+                </div>
+                <div className="text-2xl font-bold text-white mb-1">{stat.number}</div>
+                <div className="text-gray-400 text-xs">{stat.label}</div>
               </div>
-              <div className="text-3xl font-bold text-white mb-2">{stat.number}</div>
-              <div className="text-gray-400 text-sm">{stat.label}</div>
+            ))}
             </div>
           ))}
         </div>
