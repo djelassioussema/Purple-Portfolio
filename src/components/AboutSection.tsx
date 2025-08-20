@@ -122,8 +122,8 @@ const AboutSection = () => {
                 <div className="text-gray-400 text-xs">{stat.label}</div>
               </div>
             ))}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
