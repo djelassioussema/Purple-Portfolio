@@ -52,6 +52,7 @@ const AboutSection = () => {
 
         {/* Profile Card */}
         <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl p-8">
+          <>
           <div className="flex items-start space-x-6">
             {/* Avatar */}
             <div className="relative">
@@ -123,6 +124,7 @@ const AboutSection = () => {
               </div>
             ))}
           </div>
+          </>
         </div>
       </div>
     </section>
