@@ -119,7 +119,8 @@ const AboutSection = () => {
                   <stat.icon className="w-4 h-4 text-white" />
                 </div>
                 <div className="text-2xl font-bold text-white mb-1">{stat.number}</div>
-            ))}
+                <div className="text-gray-400 text-sm">{stat.label}</div>
+              </div>
             ))}
           </div>
         </div>
