@@ -4,7 +4,7 @@ import Header from './components/Header';
 import GeometricBackground from './components/GeometricBackground';
 import HeroSection from './components/HeroSection';
 import ServicesSection from './components/ServicesSection';
-import ProjectsSection from './components/ProjectsSection';
+import CodeShowcase from './components/CodeShowcase';
 import TestimonialsSection from './components/TestimonialsSection';
 import ProductsSection from './components/ProductsSection';
 import ApproachSection from './components/ApproachSection';
@@ -28,7 +28,7 @@ function App() {
           <>
             <HeroSection />
             <ServicesSection />
-            <ProjectsSection />
+            <CodeShowcase darkMode={true} />
             <TestimonialsSection />
             <ProductsSection />
             <ApproachSection />
