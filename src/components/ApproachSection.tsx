@@ -48,16 +48,6 @@ const ApproachSection = () => {
               }`}>
                 
                 {/* Phase Number Badge */}
-                <div className="absolute -top-4 left-8">
-                  <div className={`w-16 h-16 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300 ${
-                    hoveredPhase === phase.number
-                      ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white transform scale-110' 
-                      : 'bg-gray-800 text-gray-400 border border-gray-700'
-                  }`}>
-                    <span className="text-sm">Phase</span>
-                    <span className="ml-1">{phase.number}</span>
-                  </div>
-                </div>
 
                 {/* Content */}
                 <div className="pt-12 h-full flex flex-col justify-center">
