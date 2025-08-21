@@ -1,134 +1,231 @@
-import React from 'react';
-import { Globe, Code, TrendingUp, Zap } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Terminal, User, MapPin, Mail, Calendar, Code, Server } from 'lucide-react';
 
-const AboutSection = () => {
-  const stats = [
-    {
-      icon: Globe,
-      number: '25+',
-      label: 'AI Models Deployed'
-    },
-    {
-      icon: Code,
-      number: '50+',
-      label: 'Projects Delivered'
-    },
-    {
-      icon: TrendingUp,
-      number: '4+',
-      label: 'Years Experience'
-    },
-    {
-      icon: Zap,
-      number: '20+',
-      label: 'Technologies Mastered'
-    }
+interface AboutProps {
+  darkMode: boolean;
+}
+
+const About: React.FC<AboutProps> = ({ darkMode }) => {
+  const [currentCommand, setCurrentCommand] = useState('');
+  const [showOutput, setShowOutput] = useState(false);
+  const [outputLines, setOutputLines] = useState<string[]>([]);
+
+  const commands = [
+    'whoami',
+    'cat /etc/profile',
+    'ls -la ~/skills',
+    'history | tail -5'
   ];
 
-  const tabs = [
-    { id: 'vision', label: 'Vision', active: true },
-    { id: 'expertise', label: 'Expertise', active: false },
-    { id: 'innovation', label: 'Innovation', active: false }
-  ];
+  const commandOutputs = {
+    'whoami': [
+      'oussema',
+      '',
+      '# DevOps & Cloud Engineer',
+      '# Location: Tunisia',
+      '# Experience: 5+ years in cloud infrastructure',
+      '# Specialization: Kubernetes, AWS, GCP, CI/CD',
+      ''
+    ],
+    'cat /etc/profile': [
+      '# ~/.profile: executed by the command interpreter for login shells.',
+      '',
+      'export NAME="Oussema"',
+      'export ROLE="DevOps & Cloud Engineer"',
+      'export EXPERIENCE="5+ years"',
+      'export SPECIALTIES="Kubernetes,Docker,Terraform,AWS,GCP"',
+      'export PASSION="Building scalable cloud infrastructure"',
+      'export MOTTO="Automate everything, monitor everything"',
+      ''
+    ],
+    'ls -la ~/skills': [
+      'total 42',
+      'drwxr-xr-x  8 oussema oussema 4096 Jan 15 10:30 .',
+      'drwxr-xr-x 12 oussema oussema 4096 Jan 15 10:30 ..',
+      '-rw-r--r--  1 oussema oussema 2048 Jan 15 10:30 kubernetes.yml',
+      '-rw-r--r--  1 oussema oussema 1024 Jan 15 10:30 terraform.tf',
+      '-rw-r--r--  1 oussema oussema 1536 Jan 15 10:30 docker-compose.yml',
+      '-rw-r--r--  1 oussema oussema  512 Jan 15 10:30 github-actions.yml',
+      'drwxr-xr-x  2 oussema oussema 4096 Jan 15 10:30 aws/',
+      'drwxr-xr-x  2 oussema oussema 4096 Jan 15 10:30 gcp/',
+      'drwxr-xr-x  2 oussema oussema 4096 Jan 15 10:30 monitoring/',
+      ''
+    ],
+    'history | tail -5': [
+      '  998  kubectl get pods -n production',
+      '  999  terraform plan -var-file=prod.tfvars',
+      ' 1000  docker build -t app:latest .',
+      ' 1001  helm upgrade myapp ./chart --namespace production',
+      ' 1002  whoami',
+      ''
+    ]
+  };
 
-  const skills = [
-    'Strategic Planning',
-    'AI Innovation',
-    'Solution Architecture'
-  ];
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const randomCommand = commands[Math.floor(Math.random() * commands.length)];
+      setCurrentCommand('');
+      setShowOutput(false);
+      setOutputLines([]);
+
+      // Type the command
+      let i = 0;
+      const typeCommand = () => {
+        if (i < randomCommand.length) {
+          setCurrentCommand(randomCommand.slice(0, i + 1));
+          i++;
+          setTimeout(typeCommand, 100);
+        } else {
+          // Show output after command is typed
+          setTimeout(() => {
+            setShowOutput(true);
+            const output = commandOutputs[randomCommand as keyof typeof commandOutputs];
+            let lineIndex = 0;
+            const showLines = () => {
+              if (lineIndex < output.length) {
+                setOutputLines(prev => [...prev, output[lineIndex]]);
+                lineIndex++;
+                setTimeout(showLines, 200);
+              }
+            };
+            showLines();
+          }, 500);
+        }
+      };
+      typeCommand();
+    }, 8000);
+
+    // Initial command
+    setCurrentCommand('whoami');
+    setTimeout(() => {
+      setShowOutput(true);
+      const output = commandOutputs['whoami'];
+      let lineIndex = 0;
+      const showLines = () => {
+        if (lineIndex < output.length) {
+          setOutputLines(prev => [...prev, output[lineIndex]]);
+          lineIndex++;
+          setTimeout(showLines, 200);
+        }
+      };
+      showLines();
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <section className="min-h-screen py-20 px-6 relative">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
+    <section id="about" className="py-20 bg-black">
+      <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-            Solutions <span className="bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">Architect</span>
-          </h1>
-          <p className="text-gray-400 text-xl max-w-3xl mx-auto">
-            Crafting intelligent systems that push the boundaries of what's possible with AI
-          </p>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            About <span className="bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">Me</span>
+          </h2>
         </div>
 
-        {/* Profile Card */}
-        <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl p-8">
-          <>
-          <div className="flex items-start space-x-6">
-            {/* Avatar */}
-            <div className="relative">
-              <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">
-                AM
+        <div className="max-w-4xl mx-auto">
+          {/* Ubuntu Terminal */}
+          <div className="bg-gray-900 rounded-lg border border-gray-700 shadow-2xl overflow-hidden">
+            {/* Terminal Header */}
+            <div className="bg-gray-800 px-4 py-3 flex items-center space-x-2 border-b border-gray-700">
+              <div className="flex space-x-2">
+                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                <div className="w-3 h-3 rounded-full bg-green-500"></div>
               </div>
-              <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-gray-900"></div>
+              <div className="flex-1 text-center">
+                <span className="text-gray-300 text-sm font-mono">oussema@ubuntu: ~</span>
+              </div>
             </div>
 
-            {/* Info */}
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold text-white mb-2">Ali Mohsin</h2>
-              <p className="text-purple-400 mb-1">Senior AI Solutions Architect</p>
-              <p className="text-gray-400">Available for new projects</p>
-            </div>
-          </div>
-
-          {/* Tabs */}
-          <div className="mt-8 mb-6">
-            <div className="flex space-x-1 bg-gray-800/50 rounded-lg p-1 max-w-md">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                    tab.active
-                      ? 'bg-purple-600 text-white'
-                      : 'text-gray-400 hover:text-white'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Vision Content */}
-          <div className="mb-8">
-            <h3 className="text-xl font-semibold text-white mb-4">Vision</h3>
-            <p className="text-gray-300 leading-relaxed mb-6">
-              Pioneering the future of AI-driven applications, I specialize in transforming complex business challenges into intelligent, scalable solutions that deliver measurable impact.
-            </p>
-            
-            {/* Skills */}
-            <div className="flex flex-wrap gap-2">
-              {skills.map((skill, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 bg-purple-500/20 text-purple-300 text-sm rounded-full border border-purple-500/30"
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-
-
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-            {stats.map((stat, index) => (
-              <div
-                key={index}
-                className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-4 text-center hover:border-purple-500/50 transition-all duration-300"
-              >
-                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center mx-auto mb-3">
-                  <stat.icon className="w-4 h-4 text-white" />
+            {/* Terminal Content */}
+            <div className="p-6 font-mono text-sm">
+              <div className="space-y-2">
+                {/* Welcome message */}
+                <div className="text-green-400">
+                  Welcome to Ubuntu 22.04.3 LTS (GNU/Linux 5.15.0-91-generic x86_64)
                 </div>
-                <div className="text-2xl font-bold text-white mb-1">{stat.number}</div>
-                <div className="text-gray-400 text-sm">{stat.label}</div>
+                <div className="text-gray-400">
+                  * Documentation:  https://help.ubuntu.com
+                </div>
+                <div className="text-gray-400">
+                  * Management:     https://landscape.canonical.com
+                </div>
+                <div className="text-gray-400">
+                  * Support:        https://ubuntu.com/advantage
+                </div>
+                <div className="text-gray-400 mb-4">
+                  Last login: {new Date().toLocaleDateString()} from 192.168.1.100
+                </div>
+
+                {/* Command prompt */}
+                <div className="flex items-center space-x-2">
+                  <span className="text-green-400">oussema@ubuntu</span>
+                  <span className="text-white">:</span>
+                  <span className="text-blue-400">~</span>
+                  <span className="text-white">$</span>
+                  <span className="text-white">
+                    {currentCommand}
+                    <span className="animate-pulse">|</span>
+                  </span>
+                </div>
+
+                {/* Command output */}
+                {showOutput && (
+                  <div className="mt-2 space-y-1">
+                    {outputLines.map((line, index) => (
+                      <div key={index} className={`${
+                        line && line.startsWith('#') ? 'text-gray-400' : 
+                        line && line.startsWith('export') ? 'text-yellow-400' :
+                        line && (line.startsWith('drwx') || line.startsWith('-rw-')) ? 'text-blue-400' :
+                        line && line.includes('oussema') ? 'text-green-400' :
+                        'text-gray-300'
+                      }`}>
+                        {line || ''}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-            ))}
+            </div>
           </div>
-          </>
+
+          {/* Additional Info Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            <div className="p-6 rounded-xl bg-gray-800/50 border border-gray-700 hover:border-purple-500/50 transition-all duration-300">
+              <div className="flex items-center space-x-3 mb-4">
+                <Code className="w-6 h-6 text-purple-400" />
+                <h3 className="text-lg font-semibold text-white">Philosophy</h3>
+              </div>
+              <p className="text-gray-300 text-sm">
+                "Infrastructure as Code, Everything as Code. Automate the boring stuff, focus on innovation."
+              </p>
+            </div>
+
+            <div className="p-6 rounded-xl bg-gray-800/50 border border-gray-700 hover:border-purple-500/50 transition-all duration-300">
+              <div className="flex items-center space-x-3 mb-4">
+                <Server className="w-6 h-6 text-blue-400" />
+                <h3 className="text-lg font-semibold text-white">Expertise</h3>
+              </div>
+              <p className="text-gray-300 text-sm">
+                Cloud-native architectures, Kubernetes orchestration, and scalable CI/CD pipelines.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-xl bg-gray-800/50 border border-gray-700 hover:border-purple-500/50 transition-all duration-300">
+              <div className="flex items-center space-x-3 mb-4">
+                <Terminal className="w-6 h-6 text-green-400" />
+                <h3 className="text-lg font-semibold text-white">Approach</h3>
+              </div>
+              <p className="text-gray-300 text-sm">
+                Security-first mindset with observability built-in from day one.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
   );
 };
 
-export default AboutSection;
+export default About;
